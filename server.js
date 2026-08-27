@@ -116,7 +116,11 @@ async function processQueue() {
 
 app.post('/generate-pdf', async (req, res) => {
     const secret = req.headers['x-auth-token'];
-    if (secret !== INTERNAL_AUTH_TOKEN) {
+    const isAuthorized =
+        secret === INTERNAL_AUTH_TOKEN ||
+        secret === REPORT_PDF_AUTH_TOKEN;
+
+    if (!secret || !isAuthorized) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
